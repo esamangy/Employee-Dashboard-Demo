@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/5151 Icon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Generic/Default.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Generic/Device Adaptive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Generic/Mobile Styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Generic/File Viewer.css') }}">
+
+    <script src="{{ url_for('static', filename='js/Navigation.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/File Viewer.js') }}" defer></script>
+    <script type="module" src="{{ url_for('static', filename='js/Modules/TooltipMover.js') }}" defer></script>
+</head>
+<body style="margin: 0 auto;">
+    <main id="viewer" class="viewer">
+
+    </main>
+</body>
+</html>

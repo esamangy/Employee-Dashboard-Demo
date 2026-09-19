@@ -1,0 +1,16 @@
+.desktop-view {
+    display: flex !important;
+}
+
+.mobile-view {
+    display: none !important;
+}
+
+@media screen and (max-width: 800px) {
+    .mobile-view {
+        display: flex !important;
+    }
+    .desktop-view {
+        display: none !important;
+    }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ vite_asset("css/Header.css") }}
+    {{ vite_asset("css/Generic/Side Menu.css") }}
+    {{ vite_asset("js/Header.js") }}
+    
+    {% from "components/SVGs.html" import three_line_icon, bell_icon, exit_icon %}
+</head>
+<body>
+    <div class="permco-blue-bg horizontal-container header">
+        <div class="nav-option tooltip" data-menu="menu">
+            <span class="tooltip-text">Open Menu</span>
+            {{ three_line_icon("", "white") }}
+        </div>
+        <img style="height: 60%;" src="{{ url_for('static', filename='img/Permco Logo White Fill.png') }}" alt="Permco Logo">
+        <div class="nav-option extra-padding tooltip right-align nav-btn" data-dest="/Dashboard/Notifications">
+            <span class="tooltip-text">Open Notifications</span>
+            {{ bell_icon("", "white") }}
+        </div>
+        <div id="userMenuButton" class="nav-option clear tooltip" style="height: calc(70% - 2px);" data-menu="profileMenu">
+            <span class="tooltip-text">Open User Menu</span>
+            <img class="profile-pic" src="{{ url_for('static', filename='img/Default Profile Icon.png') }}" alt="Default Profile Icon">
+        </div>
+    </div>
+
+
+    {% macro header_menus(title) %}
+    <!-- Menu -->
+    <div class="header-menu-container" id="menu">
+        <!-- For the future -->
+        <!-- <a href="/profile">Profile</a> -->
+        <!-- <a href="/settings">Settings</a> -->
+        <a class="header-menu-option text {% if title == 'Dashboard' %}selected{% endif %}" href="/Dashboard/Dashboard">
+            <img src="{{ url_for('static', filename='img/Home Icon.png') }}" alt="Icon" height="28px">
+            Dashboard
+        </a>
+        <a class="header-menu-option text {% if title == 'All Apps' %}selected{% endif %}" href="/Dashboard/AllApps">
+            <img src="{{ url_for('static', filename='img/9 Grid Icon.png') }}" alt="Icon" height="28px">
+            All Apps
+        </a>
+        <a class="header-menu-option text {% if title == 'Notifications' %}selected{% endif %}" href="/Dashboard/Notifications">
+            {{ bell_icon() }}
+            Notifications
+        </a>
+    </div>
+
+    <!-- Profile Menu -->
+    <div class="header-menu-container right-align" id="profileMenu">
+        <div class="horizontal-container permco-font" style="width: 100%; border-bottom: 1px solid black; justify-content: flex-start; padding-bottom: 10px;">
+            <img src="{{ url_for('static', filename='img/Default Profile Icon.png') }}" alt="Icon" height="50px" style="margin-right: 10px;">
+            <span id="headerUserName" class="semi-bold">Jimbo Smith IV </span>
+        </div>
+        <!-- For the future -->
+        <!-- <a href="/profile">Profile</a> -->
+        <!-- <a href="/settings">Settings</a> -->
+        <a class="header-menu-option" href="/logout">
+            {{ exit_icon() }}
+            Logout
+        </a>
+    </div>
+    {% endmacro %}
+</body>
+</html>

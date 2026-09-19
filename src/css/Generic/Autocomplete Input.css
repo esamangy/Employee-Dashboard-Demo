@@ -1,0 +1,75 @@
+.suggestions-container {
+    position: absolute;
+    font-family: var(--permco-font);
+    transform: translate(-50%, 0%);
+    background-color: white;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    flex-direction: column;
+    border-radius: 5px;
+    border: 1px solid var(--light);
+}
+
+.suggestion-item {
+    user-select: none;
+}
+
+.suggestion-item:hover {
+    background-color: var(--hover-darker);
+}
+
+.suggestions-container.show {
+    display: flex;
+}
+
+.selected-option-box {
+    display: flex;
+    width: calc(100% - 20px);
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 0px 4px;
+    margin-inline: 10px;
+    flex-wrap: wrap;
+    min-height: 50px;
+}
+
+.selected-option-box input {
+    margin-right: 10px;
+    padding: 10px 0px;
+    font-size: 1rem;
+    border: none;
+    flex: 1;
+}
+
+.selected-option-box input:focus-visible {
+    border: none;
+    outline: none;
+}
+
+.selected-option {
+    display: flex;
+    direction: row;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid black;
+    margin: 10px 5px 10px 0px;
+    padding-left: 4px;
+    background-color: white;
+}
+
+.selected-option svg{
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    height: 1.5rem;
+    padding-right: 5px;
+    cursor: pointer;
+}
+
+.selected-company {
+    padding-inline: 3px;
+}
+
+.reject-bg input {
+    background-color: #ffffff00;
+}

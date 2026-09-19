@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Report Overview - Permco Sales App{% endblock %}
+{% block css %}
+    {{ vite_asset("css/Sales App.css") }}
+    {{ vite_asset("css/Generic/Side Menu.css") }}
+    {{ vite_asset("js/Pages/SalesApp/Sales App Report Overview.js") }}
+{% endblock %}
+
+{% block content %}
+{% from "components/SVGs.html" import exit_icon, open_with_icon, back_arrow_icon, download_icon %}
+<template id="downloadTemplate" >
+    <div class="tooltip">
+        <div class="tooltip-text">Download</div>
+        {{ download_icon("download-icon", "Black", 2) }}
+    </div>
+</template>
+<template id="fileOverlayTemplate" >
+    <div class="img-overlay">
+        {{ open_with_icon("open-icon overview-icon", "Black") }}
+        {{ download_icon("download-icon overview-icon", "Black", 2) }}
+    </div>
+</template>
+<template id="fileOverlayTemplate" >
+    <div class="img-overlay">
+        {{ open_with_icon("open-icon overview-icon", "Black") }}
+        {{ download_icon("download-icon overview-icon", "Black", 2) }}
+    </div>
+</template>
+<div class="horizontal-container" style="align-items: flex-start;">
+    {% if config.DEBUG %}
+        <script
+            type="module"
+            src="http://localhost:5173/@vite/client">
+        </script>
+    {% endif %}
+    <!-- left side quick menu -->
+    <div id="reportSideMenu" class="vertical-container side-menu-container flex desktop-view">
+        <div class="spacer"></div>
+        
+    </div>
+    <!-- main content  -->
+    <div id="reportOverviewMainContent" class="vertical-container" style="justify-content: flex-start; min-height: 85dvh; align-items: flex-start; padding: 20px; gap: 8px;">
+        <div class="horizontal-container desktop-view" style="width: 100%; justify-content: space-between; gap: 16px; margin-bottom: 8px;">
+            <button id="exitReportBtn" class="img-txt-btn rounded permco-font report-overview-btn-back">
+                {{ back_arrow_icon("", "Black") }}
+                Exit Report
+            </button>
+            <h1>{{reportTitle}}</h1>
+            {% if canEdit %}
+                <button id="editReportBtn" class="img-txt-btn rounded permco-font report-overview-btn">
+                    {{ open_with_icon("", "white") }}
+                    Edit Report
+                </button>
+            {% else %}
+                {% if isShared %}
+                    <Span class="cannot-edit-msg rounded">This report is shared with you</Span>
+                {% else %}
+                    <Span class="cannot-edit-msg rounded">This report has been approved</Span>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="vertical-container mobile-view" style="width: 100%; gap: 10px;">
+            <div class="horizontal-container" style="width: 100%; gap: 8px;">
+                <button id="exitReportBtn" class="img-txt-btn rounded permco-font report-overview-btn-back">
+                {{ back_arrow_icon("", "Black") }}
+                <span class="desktop-view">Exit Report</span>
+                </button>
+                {% if canEdit %}
+                    <button id="editReportBtn" class="img-txt-btn rounded permco-font report-overview-btn">
+                        {{ open_with_icon("", "white") }}
+                        Edit Report
+                    </button>
+                {% else %}
+                    {% if isShared %}
+                        <Span class="cannot-edit-msg rounded">This report is shared with you</Span>
+                    {% else %}
+                        <Span class="cannot-edit-msg rounded">This report has been approved</Span>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <h1>{{reportTitle}}</h1>
+        </div>
+        <div id="reportContents" class="vertical-container" style="width: 100%; gap: 8px;">
+
+        </div>
+        <section id="Additional Files" class="report-overview-section vertical-container" style="align-items: flex-start; gap: 8px;"></section>
+    </div>
+</div>
+{% endblock %}

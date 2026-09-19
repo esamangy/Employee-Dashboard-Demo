@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Permco App{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/5151 Icon.png') }}">
+
+    {{ vite_client() }}
+    {{ vite_asset("css/Generic/Default.css") }}
+    {{ vite_asset("css/Generic/Device Adaptive.css") }}
+    {{ vite_asset("css/Generic/Mobile Styles.css") }}
+
+    {% block css %}{% endblock %}
+
+    {{ vite_asset("js/Navigation.js") }}
+    {{ vite_asset("js/Modules/Tooltip Mover.js") }}
+
+    {% from "Header.html" import header_menus %}
+</head>
+<body>
+    {% set ns = namespace(use_header=false) %}
+    {% block header %}
+        {% set ns.use_header = true %}
+        {% include "header.html" %}
+    {% endblock %}
+
+    {% block content %}{% endblock %}
+
+    <div id="overlay" class="overlay"></div>
+
+    {% if ns.use_header %}
+        {{ header_menus(title) }}
+    {% endif %}
+</body>
+</html>

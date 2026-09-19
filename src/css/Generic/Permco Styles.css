@@ -1,0 +1,34 @@
+:root {
+    --permco-blue: #1175A8;
+    --faded-permco-blue: #1175A815;
+
+    --light: #DEDEDE;
+    --dark: #2a2a2a;
+    --mid: #686868;
+    --faded-text: #B5B5B5;
+
+    --border-color: #aaaaaa;
+
+    --hover-darker: #2a2a2a15;
+    --hover-lighter: #cccccc15;
+    --lighter-percent: 15;
+    --darker-percent: -15;
+
+    --permco-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.permco-blue-bg {
+    background-color: var(--permco-blue);
+}
+
+.permco-blue {
+    color: var(--permco-blue);
+}
+
+.permco-font {
+    font-family: var(--permco-font);
+}
+
+.faded-text {
+    color: var(--faded-text);
+}

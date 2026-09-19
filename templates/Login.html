@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In - Permco Employee Dashboard{% endblock %}
+{% block css %}
+    {{ vite_asset("js/Navigation.js") }}
+{% endblock %}
+
+{% block header %}
+    {% set ns.use_header = false %}
+{% endblock %}
+
+{% block content %}
+    <div class="desktop-view horizontal-container fill-screen">
+        <div style="width: 50%;" class="vertical-container">
+            <img style="width: 80%;" src="src/img/Permco Logo White Fill.png" alt="Permco Logo">
+            <h1 class="header permco-font">Employee Dashboard</h1>
+        </div>
+        <div style="width: 50%; height: 100%;" class="permco-blue-bg vertical-container">
+            <svg width="50%" height="100%" style="position: absolute; top: 0; left: 50%; z-index: 0;" > 
+                <line x1="50%" y1="0%" x2="0%" y2="30%" stroke="white" stroke-width="2"/>
+                <line x1="70%" y1="0%" x2="0%" y2="30%" stroke="white" stroke-width="2"/>
+                <line x1="40%" y1="100%" x2="100%" y2="70%" stroke="white" stroke-width="2"/>
+                <line x1="60%" y1="100%" x2="100%" y2="70%" stroke="white" stroke-width="2"/>
+            </svg>
+            <button style="font-size: 1.25rem; z-index: 1;" class="img-txt-btn rounded nav-btn" data-dest="/login/google">
+                <img src="src/img/Google Icon.png" alt="Icon" height="32px">
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <div class="mobile-view vertical-container fill-screen">
+        <div style="width: 100%; height: 100%; gap: 5dvh;" class="permco-blue-bg vertical-container">
+            <img style="width: 80%;" src="src/img/Permco Logo White Fill.png" alt="Permco Logo">
+            <h1 class="header permco-font" style="font-size: 4rem; color: white;">Employee Dashboard</h1>
+
+            <button style="font-size: 1.25rem; z-index: 1;" class="img-txt-btn rounded nav-btn" data-dest="/login/google">
+                <img src="src/img/Google Icon.png" alt="Icon" height="32px">
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,273 @@
+
+.filter svg {
+    height: 3dvh;
+    aspect-ratio: 1 / 1;
+    border-radius: 999px;
+    border: 2px solid black;
+    margin-right: 8px;
+}
+
+.reports-container {
+    border-right: 1px solid var(--light);
+    flex: 1 1 0;
+    min-height: 0;
+    justify-content: flex-start;
+    font-family: var(--permco-font);
+    overflow-y: auto;
+}
+
+.reports-container .topper{
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--light);
+}
+
+.topper select{
+    font-family: var(--permco-font);
+    font-size: 1rem;
+}
+
+.bucket {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bucket .topper {
+    border-bottom: none;
+    width: 100%;
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background:
+        linear-gradient(#ccc, #ccc)
+        bottom center / calc(100% - 32px) 1px
+        no-repeat;
+    align-items: center;
+}
+
+.bucket:hover .topper{
+    background-color: var(--hover-darker);
+}
+
+.bucket.active .topper{
+    background: none;
+    background-color: var(--permco-blue);
+    color: white;
+}
+
+.bucket.active .topper:hover{
+    background-color: hsl(from var(--permco-blue) h s calc(l + var(--lighter-percent)));
+}
+
+.bucket .arrow {
+    max-height: 4dvh;
+    aspect-ratio: 1 / 1;
+    transition: transform 150ms ease;
+    transform-origin: center;
+}
+
+.bucket.active .arrow {
+    transform: rotate(90deg);
+}
+
+.report {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-inline: 16px;
+    justify-content: flex-start;
+    align-items: center;
+    background:
+        linear-gradient(#ccc, #ccc)
+        bottom center / calc(100% - 32px) 1px
+        no-repeat;
+}
+
+.report h3 {
+    cursor: default;
+    font-weight: normal;
+    margin: 12px 0px;
+}
+
+.report .date {
+    margin-left: auto;
+    min-width: 100px;
+}
+
+.report:hover {
+    background-color: var(--hover-darker);
+}
+
+.report.active {
+    background: none;
+    background-color: hsl(from var(--permco-blue) h s calc(l + var(--lighter-percent)));
+    color: white;
+}
+
+.report.active:hover {
+    background-color: hsl(from var(--permco-blue) h s calc(l + calc(2 * var(--lighter-percent))));
+}
+
+.warning {
+    height: 5dvh;
+    margin-right: 12px;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+}
+
+.rejected {
+    height: 4dvh;
+    margin-right: 12px;
+    margin-left: 6px;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    background-color: red;
+    border-radius: 999px;
+    padding: 4px;
+}
+
+.overview-container {
+    flex: 1 1 0;
+    min-height: 90%;
+    gap: 12px;
+    font-family: var(--permco-font);
+    overflow-y: auto;
+    margin-top: 16px;
+}
+
+.overview-container.flex-start {
+    justify-content: flex-start;
+    min-height: 0;
+}
+
+.controls-container {
+    margin-top: 16px;
+    display: none;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0px 32px 16px 32px;
+    background:
+        linear-gradient(#ccc, #ccc)
+        bottom center / calc(100% - 32px) 1px
+        no-repeat;
+}
+
+.controls-container.show {
+    display: flex;
+}
+
+.controls-container button {
+    font-size: 1.25rem;
+    border-radius: 8px;
+    min-width: 75px;
+    border: 1px solid var(--mid);
+    cursor: pointer;
+}
+
+.controls-container button:hover {
+    background-color: var(--light);
+}
+
+.controls-container button.permco-blue-bg:hover {
+    background-color: hsl(from var(--permco-blue) h s calc(l + var(--lighter-percent)));
+}
+
+.report-overview {
+    gap: 12px;
+    width: 90%;
+}
+
+.warning-box {
+    text-align: center;
+    width: 90%;
+    background-color: var(--warning-color);
+    font-family: var(--permco-font);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.warning-box.critical {
+    background-color: var(--critical-warning-color);
+}
+
+.warning-box p {
+    font-size: 1.25rem;
+    color: black;
+    margin: 0px 16px;
+    font-weight: bold;
+}
+
+.report-overview-section-element.rejecting:hover {
+    color: red;
+}
+
+.reject-reason {
+    color: red;
+}
+
+.reject-reason:hover {
+    color: hsl(from red h s calc(l + var(--darker-percent))) !important;
+}
+
+.reject-submit-area {
+    margin-top: 64px;
+    width: 90%;
+}
+
+.reject-submit-area h2 {
+    text-align: left;
+    width: 100%;
+}
+
+.reject-submit-area textarea {
+    font-family: var(--permco-font);
+    resize: vertical;
+    width: 100%;
+    margin: 16px 8px;
+}
+
+.reject-reasons {
+    color: var(--mid);
+    width: 100%;
+}
+
+.reject-submit-area p {
+    margin: 4px 8px 4px 0px;
+    flex-shrink: 0;
+    color: black;
+}
+
+.reject-submit-area input {
+    width: 100%;
+}
+
+.remove-reason-btn {
+    margin-inline: 8px;
+    padding: 2px;
+    max-height: 3dvh;
+    aspect-ratio: 1 / 1;
+}
+
+.remove-reason-btn:hover {
+    background-color: var(--light);
+    border-radius: 8px;
+}
+
+@media screen and (max-width: 720px) {
+    .overview-container {
+        display: none;
+    }
+
+    body.viewing-report .reports-container {
+        display: none;
+    }
+
+    body.viewing-report .overview-container {
+        display: flex;
+        width: 100%;
+    }
+}

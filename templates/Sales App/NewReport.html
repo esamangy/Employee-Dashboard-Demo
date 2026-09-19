@@ -1,0 +1,465 @@
+{% extends "base.html" %}
+
+{% block title %}New Report - Permco Sales App{% endblock %}
+{% block css %}
+    {{ vite_asset("css/Sales App.css") }}
+    {{ vite_asset("css/Generic/File Input.css") }}
+    {{ vite_asset("css/Generic/Autocomplete Input.css") }}
+
+    {{ vite_asset("js/Pages/SalesApp/Sales App New Report.js") }}
+    {{ vite_asset("js/Modules/File Input.js") }}
+{% endblock %}
+
+{% block content %}
+{% from "components/SVGs.html" import exit_icon, upload_icon, trash_icon, checkmark_icon, x_icon, plus_icon %}
+<template id="suggestedCustomerTemplate">
+    <div class="suggestion-item">
+        <p id="suggestionName" class="selected-company"></p>
+    </div>
+</template>
+<template id="selectedCustomerTemplate">
+    <div class="selected-option" data-user-id="">
+        <p id="name">Wanda</p>
+        {{ x_icon("", "black") }}
+    </div>
+</template>
+<template id="deleteIcon">
+    <div class="tooltip" style="width: 32px; height: 32px;">
+        <span class="tooltip-text">Remove File</span>
+        {{ trash_icon("", "white") }}
+    </div>
+</template>
+
+<template id="warningIcon">
+    <div class="tooltip" style="background-color: yellow; border-radius: 50px; padding: 5px; height: 32px; margin: 1px; margin-left: auto;">
+        <span class="tooltip-text">File not uploaded. Submit to upload file</span>
+        <img src="{{ url_for('static', filename='img/Warning Icon.png') }}" alt="Not Uploaded" height="100%" >
+    </div>
+</template>
+
+<template id="uploadedIcon">
+    <div class="tooltip uploaded-file" style="background-color: green; border-radius: 50px; padding: 5px; height: 32px; flex-grow: 0; margin: 1px; min-width: 0px; width: 32px; margin-left: auto;">
+        <span class="tooltip-text">File uploaded</span>
+        {{ checkmark_icon("", "white", 2) }}
+    </div>
+</template>
+
+<template id="contactsTemplate">
+    <div class="vertical-container form-step-item multi-entry" style="width: 100%;">
+        <div class="horizontal-container">
+            <div class="horizontal-container" style="flex-grow: 1;">
+                <label>Name:</label>
+                <input type="text" placeholder="John Smith" data-required="true">
+            </div>
+            <div class="horizontal-container" style="flex-grow: 1;">
+                <label>Role:</label>
+                <input type="text" placeholder="Optional">
+            </div>
+        </div>
+        
+        <div class="horizontal-container">
+            <label>Contact Info:</label>
+            <input type="text" placeholder="Optional">
+            {{ x_icon(class_name="remove-entry", color="black") }}
+        </div>
+    </div>
+</template>
+
+<template id="referralsTemplate">
+    <div class="vertical-container form-step-item multi-entry" style="width: 100%;">
+        <div class="horizontal-container">
+            <div class="horizontal-container" style="flex-grow: 1;">
+                <label>Name:</label>
+                <input type="text" placeholder="John Smith" data-required="true">
+            </div>
+            <div class="horizontal-container" style="flex-grow: 1;">
+                <label>Organization:</label>
+                <input type="text" placeholder="Optional">
+            </div>
+        </div>
+        
+        <div class="horizontal-container">
+            <label>Contact Info:</label>
+            <input type="text" placeholder="Optional">
+            {{ x_icon(class_name="remove-entry", color="black") }}
+        </div>
+    </div>
+</template>
+
+<div style="width: 90%; margin: 0 auto;" id="new-report-container" data-report-id="{{ reportId if reportId else -1 }}">
+    <div class="spacer"></div>
+    <div class="progress-wrapper">
+        <span>Progress</span>
+        <div class="progress-container">
+            <div class="progress-bar" id="reportProgressBar"></div>
+        </div>
+        <span id="reportProgressPercent">0%</span>
+    </div>
+
+    <button class="img-txt-btn rounded permco-font new-report-exit-btn" id="exitBtn">
+        {{ exit_icon("", "white") }}
+        <span>Save as Draft and Exit</span>
+    </button>
+
+    <div class="spacer"></div>
+
+    <form class="report-form" id="salesReport">
+        <div class="form-step active">
+            <h2>General Information</h2>
+            <div class="form-step-item vertical-container">
+                <label for="customer_visited">Customer Visited</label>
+                <div id="customerBox" class="selected-option-box" style="margin: 3px 0px 0px 0px; width: 100%; border-width: 2px; min-height: 0px;">
+                    <input id="customer_visited" name="customer_visited" type="text" placeholder="Enter Customer Name" autocomplete="one-time-code" tabindex="0" style="padding: 5px 3px; height: auto; margin: 0px;" data-required="sibling" data-filled="sibling" data-data-type="id">
+                </div>
+                <div id="suggestionsContainer" class="suggestions-container">
+                </div>
+            </div>
+
+            <div class="form-step-item vertical-container">
+                <label for="date_visited">Date of Visit</label>
+                <input type="date" name="date_visited" id="date_visited" value="{{ today }}" data-required="true">
+            </div>
+
+            <div class="form-step-item vertical-container">
+                <label for="additional_coworkers">Did another salesman participate in this visit with you? If so, who? Please separate each entry with a comma.</label>
+                <input type="text" name="additional_coworkers" id="additional_coworkers" placeholder="Optional">
+            </div>
+        </div>
+
+        <div class="form-step" style=" gap: 1dvh;">
+            <h2>Pre-Visit Preparation</h2>
+            <p class="form-step-item" id="preperation_completed_label">Preparation Checklist (select all that apply):</p>
+            <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                <input type="checkbox" id="account_researched" name="account_researched">
+                <label for="account_researched">Account researched</label>
+            </div>
+            <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                <input type="checkbox" id="agenda_prepared" name="agenda_prepared">
+                <label for="agenda_prepared">Agenda prepared</label>
+            </div>
+            <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                <input type="checkbox" id="samples_/_literature_prepared" name="samples_/_literature_prepared">
+                <label for="samples_/_literature_prepared">Samples / literature prepared</label>
+            </div>
+            <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                <input type="checkbox" id="competitive_intelligence_gathered" name="competitive_intelligence_gathered">
+                <label for="competitive_intelligence_gathered">Competitive intelligence gathered</label>
+            </div>
+            <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                <input type="checkbox" id="lead_time_sheet_updated" name="lead_time_sheet_updated">
+                <label for="lead_time_sheet_updated">Lead-time sheet updated</label>
+            </div>
+            <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                <input type="checkbox" id="customer_history_reviewed" name="customer_history_reviewed">
+                <label for="customer_history_reviewed">Customer History reviewed</label>
+            </div>
+        </div>
+
+        <div class="form-step" style=" gap: 1dvh;">
+            <h2>Contacts</h2>
+            <p id="decision_makers_label" >Did you meet with any <span class="bold">key decision makers?</span> if so, who?</p>
+            <div id="contacts" class="vertical-container multi-entry-container form-step-item" data-entry-template="contactsTemplate" data-input-prefix="contacts">
+                {{ plus_icon(class_name="add-entry", color="black") }}
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h2>Discussion Summary</h2>
+            <div class="form-step-item vertical-container">
+                <label for="products_discussed">What products did you discuss? Please separate each entry with a comma.</label>
+                <input type="text" name="products_discussed" id="products_discussed" placeholder="Optional">
+            </div>
+            <div class="form-step-item vertical-container">
+                <label for="programs_discussed">What programs did you discuss? Please separate each entry with a comma.</label>
+                <input type="text" name="programs_discussed" id="programs_discussed" placeholder="Optional">
+            </div>
+            <div class="form-step-item vertical-container">
+                <label for="discussion_topics">Were there any other important topics discussed?</label>
+                <input type="text" name="discussion_topics" id="discussion_topics" placeholder="Optional">
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h2>Customer Goals and Pain Points</h2>
+            <div class="vertical-container" style="gap: 1dvh; width: 100%;">
+                <p class="form-step-item" id="concerns_informed_of_label">Select all concerns that were voiced during the visit:</p>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="lead_time_concerns" name="lead_time_concerns">
+                    <label for="lead_time_concerns">Lead time concerns</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="pricing" name="pricing">
+                    <label for="pricing">Pricing concerns</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="warranty" name="warranty">
+                    <label for="warranty">Warranty issues</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="logistics_concerns" name="logistics_concerns">
+                    <label for="logistics_concerns">Delivery or logistics issues</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="quality_pain_points" name="quality_pain_points">
+                    <label for="quality_pain_points">Quality concerns</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="knowledge" name="knowledge">
+                    <label for="knowledge">Need for training or product knowledge</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="stocking_shortages" name="stocking_shortages">
+                    <label for="stocking_shortages">Stocking shortages</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="competitor_presence" name="competitor_presence">
+                    <label for="competitor_presence">Competitor presence</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input class="linked-checkbox" type="checkbox" id="other_checkbox_pain_points" name="other_checkbox_pain_points" data-target="other_pain_points">
+                    <label for="other_pain_points">Other</label>
+                    <input type="text" id="other_pain_points" name="other_pain_points" placeholder="Please specify" style="margin-left: 24px;" disabled data-required="dependent" data-required-target="other_checkbox_pain_points">
+                </div>
+            </div>
+            <div class="form-step-item vertical-container">
+                <p id="addressed_issues_label">Did you proactively address these goals or pain points?</p>
+                <div class="horizontal-container radio-btn-group">
+                    <input type="radio" id="yes" name="addressed_issues" value="yes" style="margin-left: -30px;" data-required="select-one" data-target-ids="no">
+                    <label for="yes">Yes</label><br>
+                    <input type="radio" id="no" name="addressed_issues" value="no" data-required="select-one" data-target-ids="yes">
+                    <label for="no">No</label><br>
+                </div>
+            </div>
+            <div class="form-step-item vertical-container">
+                <label for="addressed_issues_explanation">Please explain.</label>
+                <textarea id="addressed_issues_explanation" name="addressed_issues_explanation" data-required="true"></textarea>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h2>Site Observations</h2>
+            <div class="form-step-item vertical-container">
+                <label for="service_capabilities">Service capabilities</label>
+                <textarea id="service_capabilities" name="service_capabilities" placeholder="Optional"></textarea>
+            </div>
+            <div class="form-step-item vertical-container">
+                <label for="inventory_findings">Inventory findings</label>
+                <textarea id="inventory_findings" name="inventory_findings" placeholder="Optional"></textarea>
+            </div>
+            <div class="vertical-container" style="gap: 1dvh; width: 100%;">
+                <p class="form-step-item" id="competitors_mentioned_label">Competitiors mentioned (select all that apply):</p>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="muncie" name="muncie">
+                    <label for="muncie">Muncie</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="heavy_motions" name="heavy_motions">
+                    <label for="heavy_motions">Heavy Motions</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="parker" name="parker">
+                    <label for="parker">Parker</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input class="linked-checkbox" type="checkbox" id="other_checkbox_observations" name="other_checkbox_observations" data-target="other_competitor">
+                    <label for="other_competitor">Other</label>
+                    <input type="text" id="other_competitor" name="other_competitor" placeholder="Please specify" style="margin-left: 24px;" disabled data-required="dependent" data-required-target="other_checkbox_observations">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h2>New Opportunities</h2>
+            <div class="vertical-container" style="gap: 1dvh; width: 100%;">
+                <p class="form-step-item" id="opportunities_identified_label">Select all that applied during the visit:</p>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="new_business" name="new_business">
+                    <label for="new_business">New Business</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="cross_reference" name="cross_reference">
+                    <label for="cross_reference">Cross-reference opportunity</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="expansion" name="expansion">
+                    <label for="expansion">New product line expansion</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="stocking_consignment" name="stocking_consignment">
+                    <label for="stocking_consignment">Stocking / consignment</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="training_opportunity" name="training_opportunity">
+                    <label for="training_opportunity">Training opportunity</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="collaboration" name="collaboration">
+                    <label for="collaboration">Engineering / project collaboration</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input class="linked-checkbox" type="checkbox" id="referral_received" name="referral_received"  data-target="referrals">
+                    <label for="referral_received">Referral received</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input type="checkbox" id="program_participation" name="program_participation">
+                    <label for="program_participation">Program participation (GPS, Pricing, etc)</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start;">
+                    <input class="linked-checkbox" type="checkbox" id="other_checkbox_opportunities" name="other_checkbox_opportunities" data-target="other_opportunities">
+                    <label for="other_opportunities">Other</label>
+                    <input type="text" id="other_opportunities" name="other_opportunities" placeholder="Please specify" style="margin-left: 24px;" disabled data-required="dependent" data-required-target="other_checkbox_opportunities">
+                </div>
+            </div>
+            <div class="vertical-container">
+                <p id="referrals_label">If you received a referral, please give some contact information for the referral.</p>
+                <div id="referrals" class="vertical-container multi-entry-container form-step-item" style="width: 100%;" data-entry-template="referralsTemplate" data-input-prefix="referrals" data-always-required="true">
+                    {{ plus_icon(class_name="add-entry", color="black") }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h2>Orders</h2>
+            <div class="form-step-item vertical-container linked-radio-controller">
+                <p id="secured_order_label">Did you secure an order during or related to this visit?</p>
+                <div class="horizontal-container radio-btn-group">
+                    <input  type="radio" id="yes_order" name="secured_order" value="yes" style="margin-left: -30px;" data-target="yes_order_label, quote, products_ordered, quote_label, products_ordered_label" data-required="select-one" data-target-ids="no_order">
+                    <label for="yes_order">Yes</label><br>
+                    <input type="radio" id="no_order" name="secured_order" value="no" data-target="no_order_label, lead_time_orders, lead_time_orders_label, price_orders, price_orders_label, quality_orders, quality_orders_label, lost_to_competitor_orders, lost_to_competitor_orders_label, budget_timing_orders, budget_timing_orders_label, low_demand_orders, low_demand_orders_label" data-required="select-one" data-target-ids="yes_order">
+                    <label for="no_order">No</label><br>
+                </div>
+            </div>
+            <div class="form-step-item horizontal-container adaptive">
+                <div class="vertical-container two-column" style="align-items: flex-start;">
+                    <p id="yes_order_label">If yes:</p>
+                    <div class="form-step-item vertical-container" style="width: 100%;">
+                        <label for="quote" id="quote_label">PO / Quote#</label>
+                        <input type="text" name="quote" id="quote" data-required="dependent" data-required-target="yes_order">
+                    </div>
+
+                    <div class="form-step-item vertical-container" style="width: 100%;">
+                        <label for="products_ordered" id="products_ordered_label">Products Ordered (series)</label>
+                        <input type="text" name="products_ordered" id="products_ordered" data-required="dependent" data-required-target="yes_order">
+                    </div>
+                </div>
+                <div class="vertical-container  two-column" style="align-items: flex-start; gap: 1dvh;">
+                    <p id="no_order_label">If no, please give the reasons why:</p>
+                    <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                        <input type="checkbox" id="lead_time_orders" name="lead_time_orders">
+                        <label for="lead_time_orders" id="lead_time_orders_label">Lead time</label>
+                    </div>
+                    <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                        <input type="checkbox" id="price_orders" name="price_orders">
+                        <label for="price_orders" id="price_orders_label">Price</label>
+                    </div>
+                    <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                        <input type="checkbox" id="quality_orders" name="quality_orders">
+                        <label for="quality_orders" id="quality_orders_label">Quality</label>
+                    </div>
+                    <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                        <input type="checkbox" id="lost_to_competitor_orders" name="lost_to_competitor_orders">
+                        <label for="lost_to_competitor_orders" id="lost_to_competitor_orders_label">Lost to a competitor</label>
+                    </div>
+                    <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                        <input type="checkbox" id="budget_timing_orders" name="budget_timing_orders">
+                        <label for="budget_timing_orders" id="budget_timing_orders_label">Budget or timing</label>
+                    </div>
+                    <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                        <input type="checkbox" id="low_demand_orders" name="low_demand_orders">
+                        <label for="low_demand_orders" id="low_demand_orders_label">No need / low demand</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h2>Training and Development</h2>
+            <div class="form-step-item vertical-container linked-radio-controller">
+                <p>Was training requested by the customer?</p>
+                <div class="horizontal-container radio-btn-group">
+                    <input  type="radio" id="yes_training" name="training_requested" value="yes" style="margin-left: -30px;" data-target="types_requested_label, permco_school_td, permco_school_td_label, virtual_training_td, virtual_training_td_label, counter_branch_td, counter_branch_td_label, other_checkbox_training, other_training_requested, other_training_label"  data-required="select-one" data-target-ids="no_training">
+                    <label for="yes_training">Yes</label><br>
+                    <input type="radio" id="no_training" name="training_requested" value="no" data-target="" data-required="select-one" data-target-ids="yes_training">
+                    <label for="no_training">No</label><br>
+                </div>
+            </div>
+            <div class="form-step-item" style="gap: 1dvh;">
+                <p id="types_requested_label">Training Types requested:</p>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                    <input class="linked-checkbox" type="checkbox" id="permco_school_td" name="permco_school_td" data-target="yes_permco_school_td, yes_permco_school_td_label, no_permco_school_td, no_permco_school_td_label, discuss_p">
+                    <label for="permco_school_td" id="permco_school_td_label">Permco School</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                    <input type="checkbox" id="virtual_training_td" name="virtual_training_td">
+                    <label for="virtual_training_td" id="virtual_training_td_label">Virtual training (Zoom / Teams)</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                    <input type="checkbox" id="counter_branch_td" name="counter_branch_td">
+                    <label for="counter_branch_td" id="counter_branch_td_label">Counter / branch training</label>
+                </div>
+                <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
+                    <input class="linked-checkbox" type="checkbox" id="other_checkbox_training" name="other_checkbox_training" data-target="other_training_requested">
+                    <label for="other_training_requested" id="other_training_label">Other</label>
+                    <input type="text" id="other_training_requested" name="other_training" placeholder="Please specify" style="margin-left: 24px;" disabled data-required="dependent" data-required-target="other_checkbox_training">
+                </div>
+            </div>
+            <div class="form-step-item vertical-container">
+                <p id="discuss_p">Did you discuss sending this account to Permco School?</p>
+                <div class="horizontal-container radio-btn-group">
+                    <input  type="radio" id="yes_permco_school_td" name="send_to_permco_school_td" value="yes" style="margin-left: -30px;" data-required="select-one" data-target-ids="no_permco_school_td">
+                    <label for="yes_permco_school_td" id="yes_permco_school_td_label">Yes</label><br>
+                    <input type="radio" id="no_permco_school_td" name="send_to_permco_school_td" value="no" data-required="select-one" data-target-ids="yes_permco_school_td">
+                    <label for="no_permco_school_td" id="no_permco_school_td_label">No</label><br>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h2>Sentiment and Relationship Feedback</h2>
+            <div class="form-step-item vertical-container">
+                <p>Customer feedback</p>
+                <div class="horizontal-container mobile-column radio-btn-group" style="width: 100%; justify-content: space-between;">
+                    <label for="positive"><input type="radio" id="positive" name="customer_feedback" value="positive" style="margin-left: -10px;" data-required="select-one" data-target-ids="neutral, negative">Generally positive</label>
+                    <label for="neutral"><input type="radio" id="neutral" name="customer_feedback" value="neutral" data-required="select-one" data-target-ids="positive, negative">Neutral</label>
+                    <label for="negative"><input type="radio" id="negative" name="customer_feedback" value="negative" data-required="select-one" data-target-ids="positive, neutral">Generally negative</label>
+                </div>
+            </div>
+            <div class="form-step-item vertical-container">
+                <p>Relationship status</p>
+                <div class="horizontal-container mobile-column radio-btn-group" style="width: 100%; justify-content: space-between;">
+                    <label for="strengthening"><input type="radio" id="strengthening" name="relationship_status" value="strengthening" style="margin-left: -10px;" data-required="select-one" data-target-ids="stable, declining">Strengthening</label>
+                    <label for="stable"><input type="radio" id="stable" name="relationship_status" value="stable" data-required="select-one" data-target-ids="strengthening, declining">Stable</label>
+                    <label for="declining"><input type="radio" id="declining" name="relationship_status" value="declining" data-required="select-one" data-target-ids="strengthening, stable">Declining</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h2>Additional Files</h2>
+            <div class="form-step-item" style="display: flex; flex-direction: column; align-items: center;">
+                <label for="filesInput" >Choose any additional files you would like to add.<span style="color: red;"> *Note: Files are not saved in drafts. Submit to save files</span></label>
+                <input id="filesInput" name="filesInput" type="file" multiple hidden accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx">
+                <div id="fileInputVisuals" class="file-input vertical-container">
+                    {{ upload_icon(stroke_width = 1.5) }}
+                    <p>Add Files</p>
+                </div>
+            </div>
+            <div class="form-step-item" style="display: flex; flex-direction: column; align-items: center; width: fit-content;">
+                <p id="uploadedFilesLabel" style="text-align: left;">Files to Upload:</p>
+                <div id="uploadedFiles" class="vertical-container" style="gap: 5px; width: fit-content;">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="horizontal-container btn-container">
+            <button type="button" id="reportBack">Back</button>
+            <button type="button" id="reportNext">Next</button>
+            <button type="submit" id="reportSubmit">Submit</button>
+        </div>
+
+        <!-- Spacer for bottom -->
+        <div style="height: 15dvh;"></div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Permco Sales App{% endblock %}
+{% block css %}
+    {{ vite_asset("css/Sales App.css") }}
+    {{ vite_asset("css/Generic/Side Menu.css") }}
+    {{ vite_asset("css/Generic/Context Menu.css") }}
+    {{ vite_asset("css/Generic/Autocomplete Input.css") }}
+
+    {{ vite_asset("js/Pages/SalesApp/Sales App.js") }}
+    {{ vite_asset("js/SideMenu.js") }}
+{% endblock %}
+
+{% block content %}
+{% from "components/SVGs.html" import three_dot_icon, bell_icon, separator_line, trash_icon, open_with_icon, edit_icon, x_icon, graph_icon %}
+<template id="threeDotIconTemplate">
+    {{ three_dot_icon() }}
+</template>
+<template id="sharedPersonTemplate">
+    <div class="horizontal-container shared-person-container">
+        <div class="vertical-container" style="align-items: flex-start;">
+            <p id="name">Alice Johnson</p>
+            <p id="email">alice.johnson@example.com</p>
+        </div>
+        <button id="removeBtn" class="semi-rounded permco-font remove-access-btn" data-accessor-id="">
+            Remove Access
+        </button>
+    </div>
+</template>
+<template id="suggestedUserTemplate">
+    <div class="suggestion-item" data-user-id="">
+        <p id="suggestionName"></p>
+        <p id="suggestionEmail"></p>
+    </div>
+</template>
+<template id="selectedUserTemplate">
+    <div class="selected-option" data-user-id="">
+        <p id="name">Wanda</p>
+        {{ x_icon("", "black") }}
+    </div>
+</template>
+
+<div class="horizontal-container" style="flex-grow: 1; align-items: flex-start;">
+    <!-- left side quick menu for desktop viewing -->
+    <div class="vertical-container side-menu-container flex sticky">
+        <button style="font-size: 1rem;" class="img-txt-btn rounded permco-font nav-btn-method side-menu-option" data-dest="SalesAppNewReport">
+            <img src="{{ url_for('static', filename='img/Plus.png') }}" alt="Icon" height="125%">
+            <span class="text">New Report</span>
+        </button>
+        <div class="spacer"></div>
+        <div role="button" class="side-menu-option rounded img-txt-btn nav-btn {% if title == 'Home' %} selected{% endif %}" style="border: none;" data-dest="/SalesApp/home">
+            <img src="{{ url_for('static', filename='img/Home Icon.png') }}" alt="Home Icon" height="100%">
+            <span class="text">Home</span>
+        </div>
+        <div role="button" class="side-menu-option rounded img-txt-btn nav-btn {% if title == 'Recently Viewed' %} selected{% endif %}" style="border: none;" data-dest="/SalesApp/recentlyviewed">
+            {{ bell_icon() }}
+            <span class="text">Recently Viewed</span>
+        </div>
+        <div class="spacer"></div>
+        <div role="button" class="side-menu-option rounded img-txt-btn nav-btn {% if title == 'My Reports' %} selected{% endif %}" style="border: none;" data-dest="/SalesApp/myreports">
+            <img src="{{ url_for('static', filename='img/File Icon.png') }}" alt="My Reports Icon" height="100%">
+            <span class="text">My Reports</span>
+        </div>
+        <div role="button" class="side-menu-option rounded img-txt-btn nav-btn {% if title == 'Shared With Me' %} selected{% endif %}" style="border: none;" data-dest="/SalesApp/sharedwithme">
+            <img src="{{ url_for('static', filename='img/Shared File Icon.png') }}" alt="Shared With Me Icon" height="100%">
+            <span class="text">Shared With Me</span>
+        </div>
+        <div class="spacer"></div>
+        <div role="button" class="side-menu-option rounded img-txt-btn nav-btn {% if title == 'My Drafts' %} selected{% endif %}" style="border: none;" data-dest="/SalesApp/mydrafts">
+            <img src="{{ url_for('static', filename='img/File Icon.png') }}" alt="My Drafts Icon" height="100%">
+            <span class="text">My Drafts</span>
+        </div>
+
+        {% if isManager %}
+            <div role="button" class="side-menu-option bottom-align rounded img-txt-btn nav-btn {% if title == 'Manager Dashboard' %} selected{% endif %}" style="border: none;" data-dest="/SalesApp/manager_dashboard">
+                {{ graph_icon(stroke_width = 5) }}
+                <span class="text">Manager Dashboard</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- main content -->
+    <div class="vertical-container main-container side-menu-remainder">
+        <ul class="vertical-container report-list-container" id="reportList" style="justify-content: flex-start;">
+            <li id="reportHeader" class="file-entry no-hover semi-bold">
+                <div class="essential-content">
+                    <p class="report-title">Report Name</p>
+                    <p class="date-visited">Date Visited</p>
+                </div>
+                <p id="lastEdited">Last Edited</p>
+                <div class="svg-container"> 
+                    {{ three_dot_icon() }}
+                </div>
+            </li>
+
+            <li id="mobileReportHeader" class="file-entry no-hover semi-bold mobile-view" style="height: 50px;">
+                <span>{{ title }}</span>
+            </li>
+            
+            <div id="noReports" style="width: 100%;">
+                <div style="height: 25dvh"></div>
+                <div class="no-file-entries">
+                    <p style="text-align: center;">It seems there are no reports available. </p>
+                    <button style="height: max-content; font-size: 1rem; width: 90%;" class="img-txt-btn rounded permco-font nav-btn" data-dest="/SalesApp/NewReport">
+                        <img src="{{ url_for('static', filename='img/Plus.png') }}" alt="Icon" height="125%" style="margin-right: 5px;">
+                        New Report
+                    </button>
+                </div>
+            </div>
+        </ul>
+
+        <div id="loadMoreTrigger" style="width: 100%; height: 25dvh;"></div>
+    </div>
+
+    <!-- context menu -->
+    <div id="file-context-menu" class="context-menu" role="menu" data-reportId="">
+        <button id="openReportBtn">
+            {{ open_with_icon() }}
+            Open
+        </button>
+        <button id="shareReportBtn">
+            <img src="{{ url_for('static', filename='img/Shared File Icon.png') }}" alt="Icon">
+            Share
+        </button>
+        {{ separator_line("", "gray", ".1", "separatorLine") }}
+        <button id="renameReportBtn">
+            {{ edit_icon() }}
+            Rename
+        </button>
+        <button id="deleteReportBtn">
+            {{ trash_icon() }}
+            Delete
+        </button>
+    </div>
+
+    <!-- Sharing menu -->
+    <div id="sharingMenu" class="share-menu" data-report-id="" style="padding: 10px 0px;">
+        <h2 id="sharingTitle">Share Report</h2>
+        <p>Use names or emails to share the report</p>
+        <div id="sharingBox" class="selected-option-box">
+            <input id="shareReportInput" type="text" placeholder="Enter names or emails..." autocomplete="one-time-code" tabindex="0">
+        </div>
+        <div id="suggestionsContainer" class="suggestions-container">
+        </div>
+        <p>People with access</p>
+        <div id="peopleContainer" class="vertical-container people-container">
+            <div id="accessorsError" class="permco-font error-loading-accessors">Error loading people with access</div>
+        </div>
+        <button class="rounded permco-font permco-blue-bg shared-done-btn" id="sharingSubmit">
+            Done
+        </button>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+
+
+.file-input.file-input {
+    margin-top: 15px;
+    width: 15dvw;
+    min-width: 200px;
+    aspect-ratio: 1 / 1;
+    align-items: center;
+    justify-items: center;
+    border: 2px dashed var(--permco-blue);
+    border-radius: 25px;
+}
+
+.file-input:hover {
+    background-color: var(--faded-permco-blue);
+}
+
+.file-input.dragging {
+    background-color: var(--faded-permco-blue);
+}
+
+.file-input svg {
+    width: 40%;
+    aspect-ratio: 1 / 1;
+    margin-bottom: 10px;
+    background-color: var(--faded-permco-blue);
+    border-radius: 50px;
+}
+
+.uploaded-file {
+    font-family: var(--permco-font);
+    padding-left: 10px;
+    font-size: 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    background-color: var(--faded-permco-blue);
+    min-width: 200px;
+    justify-content: space-between;
+    width: 100%;
+    flex-grow: 1;
+}
+
+.uploaded-file p {
+    flex-grow: 1;
+    margin-right: 24px;
+}
+
+#delete{
+    aspect-ratio: 1 / 1;
+    height: 32px;
+    min-width: 32px;
+    background-color: var(--permco-blue);
+    border-radius: 50px;
+    margin-left: 4px;
+}
+
+#delete:hover {
+    background-color: hsl(from var(--permco-blue) h s calc(l + var(--lighter-percent)));
+}
+
+#uploadedFilesLabel {
+    width: 100%;
+    text-align: left;
+}

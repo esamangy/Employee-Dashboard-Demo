@@ -1,0 +1,223 @@
+@import "Permco Styles.css";
+:root {
+    --tooltip-fade-in-duration: .6s;
+    --warning-color: #efef8d;
+    --critical-warning-color: #bd41416c;
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+}
+
+.header {
+    font-size: clamp(1rem, 6dvw, 5rem);
+    text-align: center;
+}
+
+.fill-screen {
+    height: 100dvh;
+    width: 100dvw;
+}
+
+.horizontal-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.vertical-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.vertical-container.wrap {
+    flex-wrap: wrap;
+}
+
+.horizontal-container.wrap {
+    flex-wrap: wrap;
+}
+
+.img-txt-btn {
+    display: inline-flex;
+    padding: 10px;
+    border: 2px solid var(--dark);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.img-txt-btn img {
+    margin-right: 15px;
+}
+
+.img-txt-btn svg {
+    margin-right: 15px;
+}
+
+.img-txt-btn:hover {
+    transition-duration: .15s;
+    background-color: var(--light);
+}
+
+.image-wrapper {
+    min-width: 0;
+    height: 100%;
+    align-content: center;
+}
+
+.app-card {
+    background-color: var(--permco-blue);
+    display: flex;
+    flex-shrink: 0;
+    border-radius: 5px;
+    border: 1px solid var(--mid);
+    margin: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0px;
+    min-width: 180px;
+    height: 180px;
+}
+
+@media screen and (max-width: 800px) {
+    .app-card {
+        min-width: 0px;
+        max-width: calc(calc(89% / 2));
+    }
+}
+
+.app-card img {
+    padding: 10px;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.app-card img:hover {
+    transition-duration: .15s ease;
+    background-color: var(--hover-darker);
+}
+
+.semi-rounded {
+    border-radius: 5px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.semi-bold {
+    font-weight: 600;
+}
+
+.rounded {
+    border-radius: 33px;
+}
+
+input:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+textarea:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.invisible {
+    visibility: hidden !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.spacer {
+    height: 10px;
+}
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip-text {
+    position: absolute;
+    background: var(--dark);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    font-size: 14px;
+    z-index: 20;
+    font-family: var(--permco-font);
+}
+
+.tooltip-text.centered {
+    position: absolute;
+}
+
+@media screen and (min-width: 800px) {
+    .tooltip:hover .tooltip-text {
+        transition-duration: var(--tooltip-fade-in-duration);
+        animation: tooltip-fade-in var(--tooltip-fade-in-duration) forwards;
+        opacity: 1;
+    }
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: none;
+    z-index: 11;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.overlay.show {
+    display: block;
+    opacity: .25;
+}
+
+.overlay.clear {
+    display: block;
+    opacity: 0;
+}
+
+
+@keyframes tooltip-fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    80% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

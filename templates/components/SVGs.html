@@ -1,0 +1,151 @@
+{% macro three_line_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="6" y1="8" x2="18" y2="8" stroke="{{ color }}"/>
+    <line x1="6" y1="12" x2="18" y2="12" stroke="{{ color }}"/>
+    <line x1="6" y1="16" x2="18" y2="16" stroke="{{ color }}"/>
+</svg>
+{% endmacro %}
+
+{% macro x_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="6" y1="6" x2="18" y2="18" stroke="{{ color }}"/>
+    <line x1="18" y1="6" x2="6" y2="18" stroke="{{ color }}"/>
+</svg>
+{% endmacro %}
+
+{% macro checkmark_icon(class_name="", color="black", stroke_width=1) %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="4" y1="14" x2="10" y2="20" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round;"/>
+    <line x1="10" y1="20" x2="20" y2="4" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round;"/>
+</svg>
+{% endmacro %}
+
+{% macro back_arrow_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="18" y1="2" x2="8" y2="12" stroke="{{ color }}"/>
+    <line x1="18" y1="22" x2="8" y2="12" stroke="{{ color }}"/>
+</svg>
+{% endmacro %}
+
+{% macro bell_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="3.5" r="1.5" fill="none" stroke="{{ color }}"/>
+    <path d="m 12,5 c -3.101713,5e-7 -4,1.5676234 -4,4 0,2.432376 0,4.452892 -2.5,5.5 C 4.0375249,15.112549 3,15.123126 3,17.041756 3,19 4.5,19 4.5,19 h 15 c 0,0 1.5,0 1.5,-1.958244 C 21,15.123126 19.858855,15.069147 18.5,14.5 16,13.452892 16,11.398287 16,9 16,6.6017129 15.101713,4.9999995 12,5 Z" fill="{{ color }}" stroke="{{ color }}"/>
+    <circle cx="12" cy="20.5" r="2.5" fill="{{ color }}" stroke="none"/>
+</svg>
+{% endmacro %}
+
+{% macro three_dot_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="6" r="1.5" fill="{{ color }}" />
+    <circle cx="12" cy="12" r="1.5" fill="{{ color }}" />
+    <circle cx="12" cy="18" r="1.5" fill="{{ color }}" />
+</svg>
+{% endmacro %}
+
+{% macro exit_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 10,6.9999995 V 3 L 21,3.033457 V 21 H 10 v -4" fill="none" stroke="{{ color }}"/>
+    <path  d="m 15,10 v 4 H 8 v 3 L 3,12 7.9107807,6.9999995 8,9.9999996 Z" fill="{{ color }}" stroke="{{ color }}"/>
+</svg>
+{% endmacro %}
+
+{% macro separator_line(class_name="", color="black", stroke_width="1", id="") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 2" xmlns="http://www.w3.org/2000/svg" id="{{ id }}">
+    <line x1="1" y1="1" x2="23" y2="1" stroke="{{ color }}" stroke-width="{{ stroke_width }}"/>
+</svg>
+{% endmacro %}
+
+{% macro trash_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 4,6.5 H 7 V 20 H 17 L 17,6.5 20,6.5" stroke="{{ color }}" fill="none" stroke-width="1.5" style="stroke-linecap:round; stroke-linejoin:round"/>
+    <line x1="7" y1="5.75" x2="17" y2="5.75" stroke="{{ color }}" stroke-width="3" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="10.25" y1="9" x2="10.25" y2="17" stroke="{{ color }}" stroke-width="1" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="13.75" y1="9" x2="13.75" y2="17" stroke="{{ color }}" stroke-width="1" style="stroke-linecap:round; stroke-linejoin:round;"/>
+</svg>
+{% endmacro %}
+
+{% macro open_with_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="14" y1="3" x2="21" y2="3" stroke="{{ color }}" stroke-width="1.5" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="21" y1="3" x2="21" y2="10" stroke="{{ color }}" stroke-width="1.5" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="12" y1="12" x2="21" y2="3" stroke="{{ color }}" stroke-width="1.5" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <path fill="none" stroke="{{ color }}" style="stroke-linecap:round;stroke-linejoin:round;" stroke-width="1.5" d="M 10,4 H 8 c -3,0 -4,1 -4,4 0,0 0,5 0,8 0,3 1,4 4,4 3,0 5,0.02974 8,0 3,-0.02974 4,-1 4,-4 0,-3 0,-2.617101 0,-2.617101"/>
+</svg>
+{% endmacro %}
+
+{% macro edit_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path fill="{{ color }}" stroke="{{ color }}" style="stroke-linecap:round;stroke-linejoin:miter;" d="m 10,20 3.5,-3.5 H 20 V 20 Z"/>
+    <path fill="{{ color }}" stroke="{{ color }}" style="stroke-linecap:butt;stroke-linejoin:round;" d="m 17.499553,8.9999793 2,-2 -3.5,-3.5 -2,2"/>
+    <path fill="{{ color }}" stroke="{{ color }}" style="stroke-linecap:butt;stroke-linejoin:miter;" d="M 13,6.5 3,16.5 V 20 h 3.5 l 10,-10"/>
+</svg>
+{% endmacro %}
+
+{% macro upload_icon(class_name="", color="black", stroke_width = 1) %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path fill=none stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap: round; stroke-linejoin: round; " d="M 6, 16 L 6, 18 L 18, 18 L 18, 16"/>
+    <line x1="12" y1="14" x2="12" y2="6" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="12" y1="6" x2="15" y2="9" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="12" y1="6" x2="9" y2="9" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;"/>
+</svg>
+{% endmacro %}
+
+{% macro download_icon(class_name="", color="black", stroke_width = 1) %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path fill=none stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap: round; stroke-linejoin: round; " d="M 6, 8 L 6, 6 L 18, 6 L 18, 8"/>
+    <line x1="12" y1="10" x2="12" y2="18" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="12" y1="18" x2="15" y2="15" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="12" y1="18" x2="9" y2="15" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;"/>
+</svg>
+{% endmacro %}
+
+{% macro graph_icon(class_name="", color="black", stroke_width = 1) %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="4" y1="22" x2="4" y2="10" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="12" y1="22" x2="12" y2="2" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;"/>
+    <line x1="20" y1="22" x2="20" y2="6" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;"/>
+</svg>
+{% endmacro %}
+
+{% macro filter_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path fill="{{ color }}" stroke="{{ color }}" stroke-width="1" style="stroke-linecap: round; stroke-linejoin: round; " d="M 6, 5 L 6, 10 L 10, 14 L 10, 20 L 14, 18 L 14, 14 L 18, 10 L 18, 5 Z"/>
+</svg>
+{% endmacro %}
+
+{% macro sort_icon(class_name="", color="black", stroke_width = 1) %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="4" y1="8" x2="18" y2="8" stroke="{{ color }}" stroke-width="{{ stroke_width }}"/>
+    <line x1="4" y1="12" x2="14" y2="12" stroke="{{ color }}" stroke-width="{{ stroke_width }}"/>
+    <line x1="4" y1="16" x2="12" y2="16" stroke="{{ color }}" stroke-width="{{ stroke_width }}"/>
+    <line x1="17" y1="10" x2="17" y2="18" stroke="{{ color }}" stroke-width="{{ stroke_width }}"/>
+    <path fill="{{ color }}" stroke="{{ color }}" stroke-width="1" style="stroke-linecap: round; stroke-linejoin: round; " d="M 14, 15 L 17, 18 L 20, 15 Z"/>
+</svg>
+{% endmacro %}
+
+{% macro triangle_right_icon(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path fill="{{ color }}" stroke="{{ color }}" stroke-width="1" style="stroke-linecap: round; stroke-linejoin: round; " d="M9 18 l 6-6-6-6 Z"/>
+</svg>
+{% endmacro %}
+
+{% macro exclamation_point(class_name="", color="black") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="12" y1="3" x2="12" y2="15" stroke="{{ color }}" stroke-width="3" style="stroke-linecap: round;"/>
+    <circle cx="12" cy="20" r="1.5" fill="{{ color }}" stroke="{{ color }}"/>
+</svg>
+{% endmacro %}
+
+{% macro hourglass_icon(class_name="", fill_color="yellow", stroke_color="black", stroke_width=".75") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path fill="{{ fill_color }}" stroke="{{ stroke_color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap:round; stroke-linejoin:round;" d="m 12,4 -6,0 C 6,9 10,8.7470466 10,12 c 0,3.252954 -4,3 -4,8 h 6 6 c 0,-5 -4,-5.007283 -4,-8 0,-2.9927174 4,-3 4,-8 z" id="path2"/>
+</svg>
+{% endmacro %}
+
+{% macro plus_icon(class_name="", color="black", stroke_width="1") %}
+<svg class="{{ class_name }}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="4" y1="12" x2="20" y2="12" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap: round;"/>
+    <line x1="12" y1="4" x2="12" y2="20" stroke="{{ color }}" stroke-width="{{ stroke_width }}" style="stroke-linecap: round;"/>
+</svg>
+{% endmacro %}

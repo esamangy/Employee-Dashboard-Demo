@@ -1,0 +1,134 @@
+.header {
+    height: clamp(50px, 7dvh, 70px);
+    padding-inline: 5%;
+    position: sticky;
+    top: 0px;
+    gap: 20px;
+    z-index: 11;
+}
+
+.header .nav-option {
+    height: calc(50% - 2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+}
+
+.header .right-align {
+    margin-left: auto;
+}
+
+.header .nav-option .right-align {
+    margin-left: auto;
+}
+
+.nav-option:hover {
+    transition: .2s ease;
+    background-color: var(--hover-lighter);
+}
+
+.nav-option.clear {
+    border: none;
+}
+
+.nav-option.extra-padding {
+    padding: 2px;
+}
+
+.nav-option.clear:hover {
+    background-color: transparent;
+}
+
+.nav-option svg{
+    fill: white;
+    stroke: white;
+    stroke-width: 1;
+}
+
+.nav-option img{
+    height: 100%;
+}
+
+.header-menu-container {
+    display: none;
+    position: fixed;
+    align-items: flex-start;
+    background-color: white;
+    justify-content: flex-start;
+    flex-direction: column;
+    top: 10dvh;
+    min-width: 250px;
+    max-width: 50%;
+    left: 0;
+    z-index: 12;
+    width: max-content;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 10px 10px 10px 10px;
+    gap: 5px;
+}
+
+.header-menu-container.show {
+    display: flex;
+}
+
+.header-menu-container.right-align {
+    left: auto;
+    right: 10px;
+}
+
+.header-menu-container a {
+    font-family: var(--permco-font);
+    text-decoration: none;
+    color: black;
+}
+
+.header-menu-container a.active {
+    font-weight: bold;
+}
+
+.header-menu-option {
+    display: flex;
+    border-radius: 50px;
+    padding: 5px;
+    cursor: pointer;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.header-menu-option:hover {
+    transition-duration: .15s;
+    background-color: var(--hover-darker);
+}
+
+.header-menu-option.selected {
+    background-color: var(--permco-blue);
+}
+
+.header-menu-option.selected:hover {
+    background-color: hsl(from var(--permco-blue) h s calc(l + var(--lighter-percent)));
+}
+
+.header-menu-option.text {
+    font-family: var(--permco-font);
+    white-space: nowrap;
+}
+
+.header-menu-option svg {
+    height: 3dvh;
+    margin-right: 15px;
+}
+
+.header-menu-option img {
+    height: 3dvh;
+    margin-right: 15px;
+}
+
+.header-menu-option.selected.text{
+    color: white;
+}

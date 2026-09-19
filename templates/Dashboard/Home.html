@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Permco Employee Dashboard{% endblock %}
+{% block css %}
+    {{ vite_asset("js/pages/Dashboard.js") }}
+{% endblock %}
+
+{% block content %}
+<div style="width: 90%; margin: 0 auto;">
+    <h2 class="permco-font">Recent Apps</h2>
+    <div class="horizontal-container app-group" style="justify-content: flex-start; overflow-x: auto;" data-app-group="recents">
+
+    </div>
+    <h2 class="permco-font">More content coming soon...</h2>
+</div>
+{% endblock %}
