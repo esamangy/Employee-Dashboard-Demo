@@ -1,17 +1,21 @@
 from datetime import datetime
+import re
 from typing import Any
 
-from sqlalchemy import BigInteger, Boolean, ForeignKey, DateTime, LargeBinary, Text, func, false, CheckConstraint
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import BigInteger, Boolean, ForeignKey, DateTime, Integer, LargeBinary, String, Text, UniqueConstraint, func, false, CheckConstraint
+from sqlalchemy.orm import Mapped, mapped_column, validates
+# from sqlalchemy.dialects.postgresql import JSONB          #for postgres database
+from sqlalchemy.dialects.sqlite import JSON as JSONB        #for sqlite database
 from flask_login import UserMixin
 
 from App.Database.db import BaseModel
 
+PrimaryKeyType = BigInteger().with_variant(Integer, "sqlite")
+
 class User(BaseModel, UserMixin):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(PrimaryKeyType, primary_key=True)
     role_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("roles.id"), nullable=False)
     google_sub: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
     full_name: Mapped[str] = mapped_column(Text, nullable=True)
@@ -23,13 +27,13 @@ class User(BaseModel, UserMixin):
 class Role(BaseModel):
     __tablename__ = "roles"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(PrimaryKeyType, primary_key=True)
     role_name: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
 
 class Data_Type(BaseModel):
     __tablename__ = "data_types"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(PrimaryKeyType, primary_key=True)
     type_name: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
 
     def is_type(self, type_name: str) -> bool:
@@ -38,7 +42,7 @@ class Data_Type(BaseModel):
 class File(BaseModel):
     __tablename__ = "files"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(PrimaryKeyType, primary_key=True)
     file_type_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("file_types.id"), nullable=False)
     file_name: Mapped[str] = mapped_column(Text, nullable=False)
     file_size_bytes: Mapped[int] = mapped_column(BigInteger, nullable=False)
@@ -52,7 +56,7 @@ class File(BaseModel):
 class FileType(BaseModel):
     __tablename__ = "file_types"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(PrimaryKeyType, primary_key=True)
     type_name: Mapped[str] = mapped_column(Text, nullable=False)
 
     def is_type(self, type_name: str) -> bool:
@@ -61,7 +65,7 @@ class FileType(BaseModel):
 class Json_Data(BaseModel):
     __tablename__ = "json_data"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(PrimaryKeyType, primary_key=True)
     data_type_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("data_types.id"), nullable=False)
     owner_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
@@ -80,7 +84,7 @@ class Permission_Type(BaseModel):
 class Json_Data_Permission(BaseModel):
     __tablename__ = "json_data_permissions"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(PrimaryKeyType, primary_key=True)
     permission_type_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("permission_types.id"), nullable=False)
     granted_by_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"), nullable=False)
     granted_to_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"), nullable=False)
@@ -90,19 +94,36 @@ class Json_Data_Permission(BaseModel):
 class User_Json_Data_Activity(BaseModel):
     __tablename__ = "user_json_data_activity"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(PrimaryKeyType, primary_key=True)
     json_data_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("json_data.id"), nullable=False)
     user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"), nullable=False)
     last_viewed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
+    __table_args__ = (
+        UniqueConstraint(
+            "json_data_id",
+            "user_id",
+            name="uq_user_json_data_activity"
+        ),
+    )
+
 class Customer(BaseModel):
     __tablename__ = "customers"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(PrimaryKeyType, primary_key=True)
     code: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
-    name: Mapped[str] = mapped_column(Text(7), nullable=False)
+    name: Mapped[str] = mapped_column(String(7), nullable=False)
 
-    __table_args__ = (CheckConstraint(
-        r"code ~ '^[A-Za-z&]{3}\*[A-Za-z&]{3}$'",
-        name = "check_code"
-    ),)
+    @validates("code")
+    def validate_code(self, key, code):
+        if not re.fullmatch(r"[A-Za-z&]{3}\*[A-Za-z&]{3}", code):
+            raise ValueError("Invalid customer code")
+        return code
+
+    # Below is what I had when I was using a postgres database.
+    # However, this demo is not using postgres, so I have to use the @validates decorator above instead of the CheckConstraint below.
+
+    # __table_args__ = (CheckConstraint(
+    #     r"code ~ '^[A-Za-z&]{3}\*[A-Za-z&]{3}$'",
+    #     name = "check_code"
+    # ),)

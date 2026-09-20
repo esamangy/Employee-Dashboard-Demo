@@ -1,4 +1,3 @@
-import pytest
 from Version import Version
 
 

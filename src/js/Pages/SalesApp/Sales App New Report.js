@@ -47,7 +47,7 @@ const groupInputRejectionMapping = {
     "muncie": "competitors_mentioned",
     "heavy_motions": "competitors_mentioned",
     "parker": "competitors_mentioned",
-    "other_competitors": "competitors_mentioned",
+    "other_competitor": "competitors_mentioned",
 
     "new_business": "opportunities_identified",
     "cross-reference_opportunity": "opportunities_identified",
@@ -59,7 +59,21 @@ const groupInputRejectionMapping = {
     "program_participation": "opportunities_identified",
 
     "contacts_multi": "decision_makers",
-    "referrals_multi": "referrals"
+    "referrals_multi": "referrals",
+
+    "permco_school_td": "training_types_requested",
+    "virtual_training_td": "training_types_requested",
+    "branch_training_td": "training_types_requested",
+    "other_training_requested": "training_types_requested",
+
+    "lead_time_orders": "reasons_for_not_ordering",
+    "price_orders": "reasons_for_not_ordering",
+    "quality_orders": "reasons_for_not_ordering",
+    "lost_to_competitor_orders": "reasons_for_not_ordering",
+    "budget_timing_orders": "reasons_for_not_ordering",
+    "low_demand_orders": "reasons_for_not_ordering",
+
+    "send_to_permco_school_td": "discussed_permco_school",
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -239,6 +253,7 @@ function SetupNavigationControls() {
 
         try {
             const response = await SaveFinal(true);
+            console.log(response);
             const data = await response.json();
             if (!response.ok) {
                 alert("Could not submit form.\n" + data.error);
@@ -698,10 +713,6 @@ async function SaveDraft() {
 }
 
 async function SaveFinal(submitted) {
-    if (!formDirty) { // this should never happen but just to prevent unnecessary requests to the server
-        return Promise.resolve({ ok: true });
-    }
-
     const files = GetFiles();
     const filesToAdd = files.filter(file => !file.uploaded).map(f => f.file);
     const filesAlreadyAdded = files.filter(file => file.uploaded).map(f => f.file);
@@ -746,6 +757,8 @@ async function SaveJson(targetUrl, meta = null, submitted = false) {
         body: JSON.stringify(body)
 
     });
+
+    console.log(response);
 
     return response;
 }

@@ -4,7 +4,7 @@ import re
 from flask import Blueprint, redirect, render_template, request, jsonify
 from typing import Any, Final, Sequence
 from flask_login import current_user, login_required
-from sqlalchemy import ColumnElement, Date, and_, case, cast, func, or_, select
+from sqlalchemy import ColumnElement, Date, Integer, and_, case, cast, func, or_, select
 from App.API import JsonData
 from App.API.Customer import GetCustomerFromId
 from App.API.JsonData import GetJsonDataById, RequirePermissionForEditingJsonData
@@ -345,7 +345,7 @@ def ConvertFormDataToOrganizedDict(formData:dict) -> dict:
             "muncie": True if "muncie" in formData else False,
             "heavy_motions": True if "heavy_motions" in formData else False,
             "parker": True if "parker" in formData else False,
-            "other": formData.get("other_competitors", ""),
+            "s_other_competitor": formData.get("other_competitor", ""),
         },
     }
     organizedData["new_opportunities"] = {
@@ -358,7 +358,7 @@ def ConvertFormDataToOrganizedDict(formData:dict) -> dict:
             "engineering_/_project_collaboration": True if "collaboration" in formData else False,
             "referral_received": True if "referral_received" in formData else False,
             "program_participation": True if "program_participation" in formData else False,
-            "other_opportunities": formData.get("other_opportunities", ""),
+            "s_other_opportunities": formData.get("other_opportunities", ""),
         },
         "l_referrals": GetConnectedDataSorted(formData, "referrals")
     }
@@ -381,12 +381,12 @@ def ConvertFormDataToOrganizedDict(formData:dict) -> dict:
             "permco_school": True if "permco_school_td" in formData else False,
             "virtual": True if "virtual_training_td" in formData else False,
             "branch": True if "branch_training_td" in formData else False,
-            "other": formData.get("other_training_requested", ""),
+            "s_other_training_requested": formData.get("other_training_requested", ""),
         },
-        "discussed_permco_school": formData.get("send_to_permco_school_tds", "")
+        "discussed_permco_school": formData.get("discussed_permco_school", "")
     }
     organizedData["sentiment_and_relationship_feedback"] = {
-        "feedback": formData.get("customer_feedback", ""),
+        "customer_feedback": formData.get("customer_feedback", ""),
         "relationship_status": formData.get("relationship_status", "")
     }
     return organizedData
@@ -538,8 +538,16 @@ def GetReportsForBucket(bucket, sortOrder, offset):
 def GetBucketsMeta(buckets, bucketType: str):
     if(bucketType == "q"):
         return [
-            {"label": f"Q{((bucket.month - 1) // 3) + 1} {bucket.year}", "group": f"{((bucket.month - 1) // 3) + 1} {bucket.year}"}
-            for bucket in buckets
+            {
+                "label": f"Q{((bucket.month - 1) // 3) + 1} {bucket.year}",
+                "group": f"{((bucket.month - 1) // 3) + 1} {bucket.year}"
+            }
+            for bucket in (
+                datetime.strptime(bucket, "%Y-%m-%d").date()
+                if isinstance(bucket, str)
+                else bucket
+                for bucket in buckets
+            )
         ]
     elif(bucketType == "e"):
         return [
@@ -579,8 +587,37 @@ def GetReportsForEmployee(userId, sortOrder, offset):
     raise Exception("No Database Session Active")
 
 def GetReportsForQuarter(quarter, sortOrder, offset):
-    quarterVisted = func.date_trunc("quarter", cast(dbs.Schema.Json_Data.data["date_visited"].astext, Date) ).label("quarter_start")
     desiredQuarter = GetQuarterFromBucket(quarter)
+    if dbs.db_provider.engine.dialect.name == "sqlite":
+        dateVisited = dbs.Schema.Json_Data.data["date_visited"].as_string()
+
+        month = cast(
+            func.substr(dateVisited, 1, 2),
+            Integer
+        )
+
+        year = func.substr(dateVisited, 7, 4)
+
+        quarterStartMonth = (
+            ((month - 1) / 3).cast(Integer) * 3 + 1
+        )
+
+        quarterVisited = func.date(
+            year + "-01-01",
+            func.printf("+%d months", quarterStartMonth - 1)
+        )
+
+        # SQLite returns func.date() as a string
+        desiredQuarter = desiredQuarter.isoformat()
+
+    else:
+        quarterVisited = func.date_trunc(
+            "quarter",
+            cast(
+                dbs.Schema.Json_Data.data["date_visited"].astext,
+                Date
+            )
+        )
     
     order = GetSortOrder(sortOrder)
     
@@ -589,7 +626,7 @@ def GetReportsForQuarter(quarter, sortOrder, offset):
             dbs.Schema.User,
             dbs.Schema.Json_Data.owner_id == dbs.Schema.User.id
             ).where(
-                quarterVisted == desiredQuarter,
+                quarterVisited == desiredQuarter,
                 dbs.Schema.Json_Data.data_type_id.in_(dbs.GetDataTypeIdsByName("sales_app_report"))
             ).order_by(*order).offset(offset).limit(ADDITIONAL_REPORTS_PER_PAGE).all()
         return reports
@@ -597,19 +634,32 @@ def GetReportsForQuarter(quarter, sortOrder, offset):
 
 def GetSortOrder(sortOrder) -> tuple[ColumnElement, ...]:
     user = dbs.Schema.User
-    dateOfVisit = cast(dbs.Schema.Json_Data.data["date_visited"].astext, Date)
+    if dbs.db_provider.engine.dialect.name == "sqlite":
+        dateVisitedJson = dbs.Schema.Json_Data.data["date_visited"]
+        dateOfVisit = func.date(
+            func.substr(dateVisitedJson.as_string(), 7, 4),
+            func.substr(dateVisitedJson.as_string(), 1, 2),
+            func.substr(dateVisitedJson.as_string(), 4, 2)
+        )
+    else:
+        dateOfVisit = cast(dbs.Schema.Json_Data.data["date_visited"].astext, Date)
+    
     match(sortOrder):
         case "ea":
             return (user.last_name.asc(), user.first_name.desc())
         case "ez":
             return (user.last_name.desc(), user.first_name.desc())
         case "ms":
+            if dbs.db_provider.engine.dialect.name == "sqlite":
+                approvalValue = dbs.Schema.Json_Data.meta_data["Manager_Approval"].as_string()
+            else:
+                approvalValue = dbs.Schema.Json_Data.meta_data["Manager_Approval"].astext
             approval_order = case(
-                (dbs.Schema.Json_Data.meta_data["Manager_Approval"].astext == ManagerApprovalStatus.REJECTED.value, 1),
-                (dbs.Schema.Json_Data.meta_data["Manager_Approval"].astext == ManagerApprovalStatus.ACCEPTED.value, 2),
-                else_=0
+                (approvalValue == ManagerApprovalStatus.REJECTED.value, 1),
+                (approvalValue == ManagerApprovalStatus.ACCEPTED.value, 2),
+                else_ = 0
             )
-            return (approval_order.asc(), cast(dbs.Schema.Json_Data.data["date_visited"].astext, Date).desc())
+            return (approval_order.asc(), cast(dateOfVisit, Date).desc())
         case "ql":
             return (dateOfVisit.desc(),)
         case "qo":
@@ -627,17 +677,14 @@ def GetQuarterFromBucket(bucket:str) -> date:
     return date(year, month, 1)
 
 def GetQuarterBuckets(sortOrder: str, offset:int):
-    dateOfVisit = cast(dbs.Schema.Json_Data.data["date_visited"].astext, Date)
-    quarter = func.date_trunc("quarter", dateOfVisit).label("quarter_start")
+    quarter = GetQuarterExpression(dbs.Schema.Json_Data.data["date_visited"])
     order = quarter.desc() if sortOrder == "n" else quarter.asc()
 
     with dbs.GetSession() as session:
         dates = session.scalars(select(quarter).where(
-                dateOfVisit.isnot(None),
                 dbs.Schema.Json_Data.data_type_id.in_(dbs.GetDataTypeIdsByName("sales_app_report"))
             ).distinct().order_by(order).offset(offset).limit(ADDITIONAL_REPORTS_PER_PAGE)
         ).all()
-
         return dates
     raise Exception("No Database Session Active")
 
@@ -654,3 +701,29 @@ def GetEmployeeBuckets(sortOrder: str, offset:int):
             ).distinct().order_by(*order).offset(offset).limit(ADDITIONAL_REPORTS_PER_PAGE).all()
         return employees
     raise Exception("No Database Session Active")
+
+def GetQuarterExpression(obj):
+    if dbs.db_provider.engine.dialect.name == "sqlite":
+        # SQLite-specific expression
+        dateOfVisit = obj.as_string()
+
+        month = cast(
+            func.substr(dateOfVisit, 1, 2),
+            Integer
+        )
+
+        year = func.substr(dateOfVisit, 7, 4)
+
+        quarterStartMonth = (
+            ((month - 1) / 3).cast(Integer) * 3 + 1
+        )
+
+        quarter = func.date(
+            year + "-01-01",
+            func.printf("+%d months", quarterStartMonth - 1)
+        ).label("quarter_start")
+        return quarter
+    else:
+        # PostgreSQL-specific expression
+        dateOfVisit = cast(obj.astext, Date)
+        return func.date_trunc("quarter", dateOfVisit).label("quarter_start")

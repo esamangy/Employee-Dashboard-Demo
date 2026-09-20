@@ -325,7 +325,7 @@
                 <div class="horizontal-container radio-btn-group">
                     <input  type="radio" id="yes_order" name="secured_order" value="yes" style="margin-left: -30px;" data-target="yes_order_label, quote, products_ordered, quote_label, products_ordered_label" data-required="select-one" data-target-ids="no_order">
                     <label for="yes_order">Yes</label><br>
-                    <input type="radio" id="no_order" name="secured_order" value="no" data-target="no_order_label, lead_time_orders, lead_time_orders_label, price_orders, price_orders_label, quality_orders, quality_orders_label, lost_to_competitor_orders, lost_to_competitor_orders_label, budget_timing_orders, budget_timing_orders_label, low_demand_orders, low_demand_orders_label" data-required="select-one" data-target-ids="yes_order">
+                    <input type="radio" id="no_order" name="secured_order" value="no" data-target="reasons_for_not_ordering_label, lead_time_orders, lead_time_orders_label, price_orders, price_orders_label, quality_orders, quality_orders_label, lost_to_competitor_orders, lost_to_competitor_orders_label, budget_timing_orders, budget_timing_orders_label, low_demand_orders, low_demand_orders_label" data-required="select-one" data-target-ids="yes_order">
                     <label for="no_order">No</label><br>
                 </div>
             </div>
@@ -343,7 +343,7 @@
                     </div>
                 </div>
                 <div class="vertical-container  two-column" style="align-items: flex-start; gap: 1dvh;">
-                    <p id="no_order_label">If no, please give the reasons why:</p>
+                    <p id="reasons_for_not_ordering_label">If no, please give the reasons why:</p>
                     <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
                         <input type="checkbox" id="lead_time_orders" name="lead_time_orders">
                         <label for="lead_time_orders" id="lead_time_orders_label">Lead time</label>
@@ -375,7 +375,7 @@
         <div class="form-step">
             <h2>Training and Development</h2>
             <div class="form-step-item vertical-container linked-radio-controller">
-                <p>Was training requested by the customer?</p>
+                <p id="training_requested_label">Was training requested by the customer?</p>
                 <div class="horizontal-container radio-btn-group">
                     <input  type="radio" id="yes_training" name="training_requested" value="yes" style="margin-left: -30px;" data-target="types_requested_label, permco_school_td, permco_school_td_label, virtual_training_td, virtual_training_td_label, counter_branch_td, counter_branch_td_label, other_checkbox_training, other_training_requested, other_training_label"  data-required="select-one" data-target-ids="no_training">
                     <label for="yes_training">Yes</label><br>
@@ -384,9 +384,9 @@
                 </div>
             </div>
             <div class="form-step-item" style="gap: 1dvh;">
-                <p id="types_requested_label">Training Types requested:</p>
+                <p id="training_types_requested_label">Training Types requested:</p>
                 <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
-                    <input class="linked-checkbox" type="checkbox" id="permco_school_td" name="permco_school_td" data-target="yes_permco_school_td, yes_permco_school_td_label, no_permco_school_td, no_permco_school_td_label, discuss_p">
+                    <input class="linked-checkbox" type="checkbox" id="permco_school_td" name="permco_school_td" data-target="yes_permco_school_td, yes_permco_school_td_label, no_permco_school_td, no_permco_school_td_label, discussed_permco_school_label">
                     <label for="permco_school_td" id="permco_school_td_label">Permco School</label>
                 </div>
                 <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
@@ -400,15 +400,15 @@
                 <div class="form-step-item horizontal-container" style="justify-content: flex-start; width: 100%;">
                     <input class="linked-checkbox" type="checkbox" id="other_checkbox_training" name="other_checkbox_training" data-target="other_training_requested">
                     <label for="other_training_requested" id="other_training_label">Other</label>
-                    <input type="text" id="other_training_requested" name="other_training" placeholder="Please specify" style="margin-left: 24px;" disabled data-required="dependent" data-required-target="other_checkbox_training">
+                    <input type="text" id="other_training_requested" name="other_training_requested" placeholder="Please specify" style="margin-left: 24px;" disabled data-required="dependent" data-required-target="other_checkbox_training">
                 </div>
             </div>
             <div class="form-step-item vertical-container">
-                <p id="discuss_p">Did you discuss sending this account to Permco School?</p>
+                <p id="discussed_permco_school_label">Did you discuss sending this account to Permco School?</p>
                 <div class="horizontal-container radio-btn-group">
-                    <input  type="radio" id="yes_permco_school_td" name="send_to_permco_school_td" value="yes" style="margin-left: -30px;" data-required="select-one" data-target-ids="no_permco_school_td">
+                    <input  type="radio" id="yes_permco_school_td" name="discussed_permco_school" value="yes" style="margin-left: -30px;" data-required="select-one" data-target-ids="no_permco_school_td">
                     <label for="yes_permco_school_td" id="yes_permco_school_td_label">Yes</label><br>
-                    <input type="radio" id="no_permco_school_td" name="send_to_permco_school_td" value="no" data-required="select-one" data-target-ids="yes_permco_school_td">
+                    <input type="radio" id="no_permco_school_td" name="discussed_permco_school" value="no" data-required="select-one" data-target-ids="yes_permco_school_td">
                     <label for="no_permco_school_td" id="no_permco_school_td_label">No</label><br>
                 </div>
             </div>
@@ -417,7 +417,7 @@
         <div class="form-step">
             <h2>Sentiment and Relationship Feedback</h2>
             <div class="form-step-item vertical-container">
-                <p>Customer feedback</p>
+                <p id="customer_feedback_label">Customer feedback</p>
                 <div class="horizontal-container mobile-column radio-btn-group" style="width: 100%; justify-content: space-between;">
                     <label for="positive"><input type="radio" id="positive" name="customer_feedback" value="positive" style="margin-left: -10px;" data-required="select-one" data-target-ids="neutral, negative">Generally positive</label>
                     <label for="neutral"><input type="radio" id="neutral" name="customer_feedback" value="neutral" data-required="select-one" data-target-ids="positive, negative">Neutral</label>
@@ -425,7 +425,7 @@
                 </div>
             </div>
             <div class="form-step-item vertical-container">
-                <p>Relationship status</p>
+                <p id="relationship_status_label">Relationship status</p>
                 <div class="horizontal-container mobile-column radio-btn-group" style="width: 100%; justify-content: space-between;">
                     <label for="strengthening"><input type="radio" id="strengthening" name="relationship_status" value="strengthening" style="margin-left: -10px;" data-required="select-one" data-target-ids="stable, declining">Strengthening</label>
                     <label for="stable"><input type="radio" id="stable" name="relationship_status" value="stable" data-required="select-one" data-target-ids="strengthening, declining">Stable</label>

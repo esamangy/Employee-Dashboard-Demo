@@ -1,9 +1,9 @@
 from flask_login import current_user
 from sqlalchemy.orm import Session
-from App.Database.DatabaseProviders import TestSessionProvider
+from App.Database.DatabaseProviders import InMemoryProvider, TestSessionProvider
 from App.Database import Schema
 
-db_provider = TestSessionProvider()
+db_provider = InMemoryProvider() # this would be a provider with  real database connection in production
 
 class AccessDeniedError(Exception):
     pass
@@ -32,6 +32,22 @@ def InsertRole(name: str):
 
         try:
             session.add(role)
+            print("added role")
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            print(f"Error: {e}")
+
+def InsertCustomer(name: str, code: str):
+    with GetSession() as session:
+        customer = Schema.Customer(
+            name=name,
+            code=code
+        )
+
+        try:
+            session.add(customer)
+            print("added customer")
             session.commit()
         except Exception as e:
             session.rollback()

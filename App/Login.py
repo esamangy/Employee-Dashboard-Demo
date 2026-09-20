@@ -48,6 +48,22 @@ def Google():
     redirect_uri = url_for("login.GoogleCallback", _external=True)
     return oauth.google.authorize_redirect(redirect_uri)
 
+#this is a bypass for viewping purposes
+@login_bp.route("/login/bypass")
+def Bypass():
+    User.InsertUser(
+        name = "Bypass User",
+        first_name = "Bypass",
+        last_name = "User",
+        email = "bypass@example.com",
+        google_sub = "bypass_user",
+        role_id = dbs.GetRoleIdByName("Admin")
+    )
+    user = dbs.GetSession().query(dbs.Schema.User).filter_by(google_sub="bypass_user").first()
+    dbs.GetSession().commit()
+    login_user(user)
+    return redirect(url_for("dashboard.Dashboard"))
+
 @login_bp.route("/login/google/callback")
 def GoogleCallback():
     token = oauth.google.authorize_access_token()

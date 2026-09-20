@@ -252,7 +252,7 @@ function IsAnInput(value) {
     c_ = group of checkboxes
     a_ = this is an array of values
     l_ = the values of this is an array of values that should be linked together
-    s_ = the value for this is actual a subvalue
+    s_ = the value for this is actually a subvalue
     */
     if(typeof value !== "string") {
         return false;
