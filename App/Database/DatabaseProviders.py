@@ -53,4 +53,7 @@ class InMemoryProvider(DatabaseSessionProvider):
         return self.SessionLocal()
 
     def Get_DB_URL(self) -> str:
-        return "sqlite://"
+        url = os.getenv("DATABASE_URL")
+        if(not url):
+            raise ValueError("DATABASE_URL environment variable is not set.")
+        return url
